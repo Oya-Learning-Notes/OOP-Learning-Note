@@ -22,7 +22,7 @@ int main() {
 
 Notice this only applyed to public derived class. Try to change the derive type to `private` and see what happen.
 
-# Constructor Of Derived Class
+# Constructor
 
 First if you are doing some easy work, which means that all the super class has no parameterized constructor, and the derived class itself has no member that need to call custom constructor, then you can just leave it alone and let compiler to auto generate a constructor.
 
@@ -159,3 +159,351 @@ Derived()
 ~Base1()
 ```
 
+# Derivation Conflict
+
+## Multi-Base Conflict
+
+If there are members with same names in different base classes, then conflict occured.
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base1{
+public:
+    int var;
+};
+
+class Base2{
+public:
+    int var;
+};
+
+class Derived : public Base1, public Base2{
+public:
+    int varDerived;
+};
+
+int main(){
+    Derived ins;
+    cout << ins.var << endl; // error: request for member ‘var’ is ambiguous
+    
+    return 0;
+}
+```
+
+Check out diagram below:
+
+![image](https://github.com/Oya-Learning-Notes/OOP-Learning-Note/assets/61616918/256a5802-6453-4e00-9d5b-c2b784fc9a7e)
+
+If there is any function with the same name then same things will happen.
+
+But what if functions in two base class has same name but different param list?
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base1{
+public:
+    int add(int x){
+        return x + 1;
+    }
+};
+
+class Base2{
+public:
+    int add(int x, int y){
+        return x + y;
+    }
+};
+
+class Derived : public Base1, public Base2{
+public:
+    int varDerived;
+};
+
+int main(){
+    Derived ins;
+    cout << ins.add(1) << endl;     // error: request for member ‘add’ is ambiguous
+    cout << ins.add(1, 2) << endl;  // error: request for member ‘add’ is ambiguous
+    
+    return 0;
+}
+```
+
+That means **even if param list is different, there would still have ambiguous error**.
+
+## Base And Derived Conflict
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base1{
+public:
+    int var1 = 0;
+};
+
+class Base2{
+public:
+    int var2 = 0;
+    int add(int x, int y){
+        return x + y;
+    }
+};
+
+class Derived : public Base1, public Base2{
+public:
+    int add(int x){
+        return x + 1;
+    }
+};
+
+int main(){
+    Derived ins;
+    cout << ins.add(1) << endl;    // OK Output: 2
+    cout << ins.add(1, 2) << endl; // error: no matching function for call to ‘Derived::add(int, int)
+    
+    return 0;
+}
+```
+
+![image](https://github.com/Oya-Learning-Notes/OOP-Learning-Note/assets/61616918/8eb6dada-5f85-4960-89e8-ccfb452fe0cf)
+
+In fact, as long as there is a same-name function in derived class, **ALL overrides in base classes will be hidden despite of whether the param list is the same**.
+
+One method to let compiler only hide the conflict one is add `using` statement.
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base1{
+public:
+    int var1 = 0;
+};
+
+class Base2{
+public:
+    int var2 = 0;
+    int add(int x, int y){
+        return x + y;
+    }
+    int add(int x){
+        return x + 2;
+    }
+};
+
+class Derived : public Base1, public Base2{
+public:
+    using Base2::add;
+    int add(int x){
+        return x + 1;
+    }
+};
+
+int main(){
+    Derived ins;
+    cout << ins.add(1) << endl;     // Derived::add Output: 2
+    cout << ins.add(1, 2) << endl;  // Base2::add   Output: 3
+    
+    return 0;
+}
+```
+
+![image](https://github.com/Oya-Learning-Notes/OOP-Learning-Note/assets/61616918/3c1d7594-8527-44c0-b549-d39f6f7ce735)
+
+
+## Diamond Inherit
+
+Consider the situation below:
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base {
+    public:
+    int var;
+};
+
+class Mid1 : public Base {
+    ;
+};
+
+class Mid2 : public Base {
+    ;
+};
+
+class Derived : public Mid1, public Mid2 {
+    ;
+};
+
+int main(){
+    Derived ins = Derived();
+    ins.var;
+    
+    return 0;
+}
+```
+
+In this case, seems that there is only one `var` in `Base`, but actually both `Mid1` and `Mid2` is derived from `Base`, means there would be two different copy of `var` inside memory of class instance of `Derived`.
+
+![image](https://github.com/Oya-Learning-Notes/OOP-Learning-Note/assets/61616918/42a7329f-d3d2-4761-b0b4-2d6cd3f2a16f)
+
+One solution is to directly specify which `var` you want to access.
+
+```cpp
+int main(){
+    Derived ins = Derived();
+    cout << ins.Mid1::var << endl; // 0
+    ins.Mid2::var = 100;
+    cout << ins.Mid2::var << endl; // 100
+    
+    return 0;
+}
+```
+
+Another approach is to use `virtual public` inherit when declaring `Mid1` and `Mid2`.
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base {
+    public:
+    int var;
+};
+
+class Mid1 : virtual public Base {
+    ;
+};
+
+class Mid2 : virtual public Base {
+    ;
+};
+
+class Derived : public Mid1, public Mid2 {
+    ;
+};
+
+int main(){
+    Derived ins = Derived();
+    cout << ins.var << endl; // 0
+    
+    return 0;
+}
+```
+
+Using `virtual public` inherit will tell compiler only use one piece of memory in subclasses to store info of the `Base` class.
+
+When using `virtual public` to derive from `Base`, all direct and indirect class should take the responesiblity to call _constructor_ of this `Base` class. Check example below:
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base {
+    public:
+    int var;
+    Base(int initVar) : var(initVar) {
+        cout << "Base::Base(int)" << endl;
+    }
+};
+
+class Mid1 : virtual public Base {
+    public:
+    Mid1() : Base(1) {
+        cout << "Mid1::Mid1()" << endl;
+    }
+};
+
+class Mid2 : virtual public Base {
+    public:
+    Mid2() : Base(2) {
+        cout << "Mid2::Mid2()" << endl;
+    }
+};
+
+class Derived : public Mid1, public Mid2 {
+    public:
+    Derived() : Base(3), Mid1(), Mid2() {
+        cout << "Derived::Derived()" << endl;
+    }
+};
+
+int main(){
+    Derived ins = Derived();
+    cout << ins.var << endl;
+    
+    return 0;
+}
+```
+
+Notice that **even in indirect sub class `Derived`, we need to call `Base::Base` in constructor** when we use virtual inherit.
+
+Here comes the questions, we directly call `Base::Base` in derived class, and we also call two mid class constructor, which will also call base class constructor. **Will `Base::Base()` be called repeatly more than one time?**
+
+No, actually compiler will only allow the farest sub-class, in this example is `Derived`, to call `Base::Base(int)`, other calls in the middle of inherit tree will be ignored, in this example is the call from `Mid1` and `Mid2`. Check code example below:
+
+```cpp
+#include <iostream>
+
+using std::endl, std::cout;
+
+class Base {
+    public:
+    int var;
+    Base(int initVar) : var(initVar) {
+        cout << "Base::Base(int)" << endl;
+    }
+};
+
+class Mid1 : virtual public Base {
+    public:
+    Mid1() : Base(1) {
+        cout << "Mid1::Mid1()" << endl;
+    }
+};
+
+class Mid2 : virtual public Base {
+    public:
+    Mid2() : Base(2) {
+        cout << "Mid2::Mid2()" << endl;
+    }
+};
+
+class Derived : public Mid1, public Mid2 {
+    public:
+    Derived() : Base(3), Mid1(), Mid2() {
+        cout << "Derived::Derived()" << endl;
+    }
+};
+
+int main(){
+    Derived ins = Derived();
+    cout << ins.var << endl;
+    
+    return 0;
+}
+```
+
+Output:
+
+```
+Base::Base(int)
+Mid1::Mid1()
+Mid2::Mid2()
+Derived::Derived()
+3
+```
+
+![image](https://github.com/Oya-Learning-Notes/OOP-Learning-Note/assets/61616918/dc175704-b790-4356-af26-1e25bc93c2b1)

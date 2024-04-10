@@ -8,4 +8,6 @@ Briefly talking about `public`, `protected` and `private`, what's their differen
 
 [Derived Class Basic](./derived_class.md)
 
-Talks about how to create derived class, the properties of derived class, and how we create _constructor_ and _destructor_ for our derived classes.
+Talks about how to create derived class, the properties of derived class, and how we create _constructor_ and _destructor_ for our derived classes. Also talking about conflict and how to deal with them when we derive classes in C++.
+
+[Virtual Member Function](./virtual_function.md)
