@@ -1,6 +1,6 @@
 # Type of Class Constructor
 
-There are 4 general type of constructor.
+There are 5 general types of constructor.
 
 - Constructor
 - Default Constructor
@@ -172,3 +172,7 @@ In this situation, the allocation of memory is done by original calling function
 ![image.png](https://s2.loli.net/2024/03/16/OjwotdPQnqRWVGc.png)
 
 If you are using TSU Press - C++ Programming as your textbook, you can check out P145 for more info.
+
+# Other Cases
+
+Actually when we create derived classes, or when taking virtual inherited into consideration, there will be more other things to notice when creating constructor/destructor, check out another post about derived class for more info.
