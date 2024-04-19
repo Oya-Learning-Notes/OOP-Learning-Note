@@ -11,4 +11,9 @@ An online C++ code compiler with extensive features support and really nice code
 
 [Enums](enum.md)
 
+[Pointer](./pointer.md)
+
+Talks about different pointers in C++.
+
 [C++ Classes](./class)
+
