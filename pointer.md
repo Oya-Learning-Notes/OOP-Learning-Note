@@ -160,3 +160,27 @@ instance.*member_variable_pointer;
 Don't forget the parenthesis when you use _member function pointer_ to call functions.
 
 Check [Microsoft Learn - Pointers to Members](https://learn.microsoft.com/en-us/cpp/cpp/pointers-to-members?view=msvc-170) for more info.
+
+# Pointer To Const Value
+
+Pointer to const value could NOT mutate the value even if it's not a const pointer.
+
+Actually in most of time you can pass the compilation if you don't use `const` pointer when pointing to const value. But below `C++11` there is one exception:
+
+```cpp
+#include <stdio.h>
+#include <iostream>
+using std::cout;
+using std::endl;
+
+int main(){
+    char* str = "Hello World!";
+    cout << *str << endl;
+    *str = "1";
+    cout << *str << endl; // compile time error
+}
+```
+
+Although `str` seems like a _non-const_ pointer, but the value `"Hello World!"` is actually a `const char*` type value. **So there will be a compile error when trying mutate the memory of that string**.
+
+Notice in `ISO C++11` and later version, declaration like `char* str = "String";` will be forbidden. You must declare the pointer as a `const`.

@@ -48,6 +48,17 @@ CustomClass instance; // Error: the default constructor of "CustomClass" cannot 
 
 _Copy Constructor_ will be called when you try to create a new instance of this class based on the data of an existing instance.
 
+The template of copy constructor of class `A` will be:
+
+```cpp
+class A{
+    public:
+    A(const A&);
+};
+```
+
+Notice that the parameter should be a `const` reference.
+
 ## When will be called
 
 More detailed, copy constructor will be called in following cases:
