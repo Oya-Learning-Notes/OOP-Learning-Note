@@ -76,6 +76,63 @@ void some_func(CustomClass ins);
 some_func(c);        // copy constructor called
 ```
 
+## Copy Constructor Overrides
+
+Generally when we declare a custom copy constructor of a class `T`, we will set the first param `const T &` ,but is it mandatory? Let's find out in rest of this post.
+
+Check out the code below:
+
+```cpp
+// g++ std:c++20
+
+#include <iostream>
+
+using std::cout, std::endl;
+
+class TestClass
+{
+private:
+    int mValue = 0;
+
+public:
+    // constructor
+    TestClass(int value = 0) : mValue(value) {}
+
+    // copy constructor with first param T&
+    TestClass(TestClass &ano) : mValue(ano.mValue)
+    {
+        ++ano.mValue;
+        cout << "TestClass(TestClass &)" << endl;
+    }
+
+    // copy constructor with first param const T &
+    TestClass(const TestClass &ano) : mValue(ano.mValue) { cout << "TestClass(const TestClass &)" << endl; }
+
+    void show() const
+    {
+        cout << mValue << endl;
+    }
+};
+
+int main()
+{
+    TestClass ins;
+    const TestClass ins2;
+    TestClass ins3{ins};
+    TestClass ins4{ins2};
+    ins.show();
+    ins2.show();
+
+    return 0;
+}
+```
+
+This program shows that we could **have more than one copy constructor in a single class with different param list**. _(here `const` and non-const param will be considered different and so could be used to mark two different override of copy constructor)_
+
+Then when the place copy constructor is called, compiler will call the proper copy constructor override based on the instance (If it's `const` etc. ).
+
+For more info, check out: [Cpp References - Class Copy Constructor](https://en.cppreference.com/w/cpp/language/copy_constructor)
+
 # Move Constructor
 
 To be simple, move constructor will be called when construct a new instance from an existing _rValue_ (temporary) instance.
