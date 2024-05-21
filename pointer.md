@@ -121,6 +121,8 @@ int main(){
 }
 ```
 
+For some additional info, check out [Multiple Dimension Array Pointer](./cpp_multi_dim_pointer.md)
+
 # Member Function/Variable Pointer
 
 In C++, we could also create pointer which point to the member function or varibles of a class.
