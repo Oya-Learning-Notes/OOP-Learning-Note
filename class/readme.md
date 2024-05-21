@@ -10,6 +10,8 @@ Introduces two ways to override operators for a class.
 
 This post talks about the usage of `const` when declaring class member functions.
 
+[Class Static Members](./class_static_mem.md)
+
 [Class Access Control](./class_access_control.md)
 
 Briefly talking about `public`, `protected` and `private`, what's their difference and how should we use them.

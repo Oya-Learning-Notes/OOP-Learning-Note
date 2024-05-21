@@ -117,14 +117,23 @@ public:
 int main()
 {
     TestClass ins;
-    const TestClass ins2;
+    const TestClass constIns;
     TestClass ins3{ins};
-    TestClass ins4{ins2};
+    TestClass ins4{constIns};
     ins.show();
-    ins2.show();
+    constIns.show();
 
     return 0;
 }
+
+/**
+Output: 
+
+TestClass(TestClass &)
+TestClass(const TestClass &)
+1
+0
+*/
 ```
 
 This program shows that we could **have more than one copy constructor in a single class with different param list**. _(here `const` and non-const param will be considered different and so could be used to mark two different override of copy constructor)_
