@@ -24,6 +24,45 @@ If we use a more direct diagram to describe this relation, we will get the resul
 
 ![cpp_class_access_diagram.png](https://s2.loli.net/2024/03/19/xaBU72Z5PA9pcDq.png)
 
+## Protected Base Class Member Access
+
+In above we say that `protected` member in base class could be accessed in the derived class. Is that always true? Well not always.
+
+```cpp
+#include <iostream>
+
+using std::cout, std::endl;
+
+class Base {
+    protected:
+    int mValue = 0;
+};
+
+class Derived : protected Base {
+    public:
+    void showValue(){
+        cout << "Value = " << mValue << endl;
+        // Output: Value = 0
+    }
+
+    void readValueFromOtherInstance(){
+        Base anotherInstance;
+        // anotherInstance.mValue;
+        // error: ‘int Base::mValue’ is protected within this context
+    }
+};
+
+int main(){
+    Derived ins;
+    ins.showValue();
+    return 0;
+}
+```
+
+When we try to access the `protected` value `mValue` from _Member Functions_ in _Derived Class_ __of this instance__, it works as intend.
+
+When we try to __read `protected` value in member function from another instance__, it will raise compile time error.
+
 ## Static Members
 
 The rules introduced above only apply to _non-static_ member in base class. That means: _public static members_ will still accessible from derived class even if you use `private` to declare the base class.
@@ -69,13 +108,13 @@ void DerivedClass2::someMemberFunction()
 }
 ```
 
-Now we fount no matter in what derived class, the express `::BaseClass::count` is valid. You can think we **directly access this public static member by using scope operator**, which is the same thing we do if we want to access this public member outside that class.
+Now we found no matter in what derived class, the express `::BaseClass::count` is valid. You can think we **directly access this public static member by using scope operator**, which is the same thing we do if we want to access this public member outside that class.
 
 However `this->count` works in member function of `DerivedClass`, but not works in `DerivedClass2`.
 
-**Two explanations for me**. First one is from Microsoft docs, and another one is from myself lol.
+**Two explanations for me**. First one is from Microsoft docs, and another one is from myself.
 
-However, in C++ class, _member functions_ and _friend classes/functions_ has the right to convert a class type to its direct base class even if it's declared in `private` or `protected`.
+> However, in C++ class, _member functions_ and _friend classes/functions_ has the right to convert a class type to its direct base class even if it's declared in `private` or `protected`.
 
 For me, I would like to directly considered that when we access _static_ member in base classes through instance/pointer/ref, **the static member could be considered still follow the rules of _non-static_ members**.
 
@@ -115,6 +154,6 @@ int main()
 
 The conclusion is:
 
-Accessiblity of a virtual function of a class is decide by the type of the instance that you call it.
+Accessiblity of a virtual function of a class is __decided by the type of the instance that you call it.__
 
 That means if the virtual function is public in the class, then the instance/pointer/ref with this class type would have public access to this virtual function. Same to `protect` and `private`

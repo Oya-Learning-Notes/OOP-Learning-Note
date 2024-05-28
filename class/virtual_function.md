@@ -100,6 +100,10 @@ To solve this problem and let the destruction start from the bottom, we should u
 
 When we add `virtual ~Base()`, then the derived class constructor will be called as we expected.
 
+# Override Keyword
+
+Notice that `override` keyword could only be used with method that marked `virtual`.
+
 # Ref
 
 [Microsoft Learn - Virtual Function](https://learn.microsoft.com/en-us/cpp/cpp/virtual-functions?view=msvc-170)
