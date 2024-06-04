@@ -83,7 +83,7 @@ Derived Constructor
 Similar to constructor, here we recommend calling super class copy constructor
 
 ```cpp
-class Derived : public Base {
+class Derived : Base {
 public:
     Derived(const Derived& anoIns) : Base(anoIns) {
         // do some copy construction work
@@ -93,7 +93,7 @@ public:
 
 Notice that here `anoIns` is a `Derived` class type object, but `Base(const Base&)` actually receives a `Base` type object. Why it still work?
 
-This is because the _derived class type convert_ rules that we talked about above. **Any publicly derived class type could convert to its public super class type.**
+This is because the _derived class type convert_ rules that we talked about above. **Any publicly derived class type could convert to its public super class type.** Moreover, __as a special case, here the `public` condition is not needed anymore__. This means even if `Derived` is privitely derived from `Base`, this code will still work.
 
 # Destructor
 

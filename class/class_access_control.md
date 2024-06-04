@@ -125,10 +125,16 @@ Still based on the Microsoft docs, which gave us the following example:
 ```cpp
 // example given in Microsoft docs
 
+#include <iostream>
+using std::cout, std::endl;
+
 class VFuncBase
 {
 public:
-    virtual int GetState() { return _state; }
+    virtual int GetState() { 
+        cout << "Base::GetState()" << endl;
+        return _state;
+    }
 
 protected:
     int _state;
@@ -137,7 +143,10 @@ protected:
 class VFuncDerived : public VFuncBase
 {
 private:
-    int GetState() { return _state; }
+    int GetState() {
+        cout << "Derived::GetState()" << endl;
+        return _state; 
+    }
 };
 
 int main()
@@ -148,12 +157,17 @@ int main()
     int State;
 
     State = pvfb->GetState(); // GetState is public.
-    State = pvfd->GetState(); // C2248 error expected; GetState is private;
+    // State = pvfd->GetState(); // C2248 error expected; GetState is private;
 }
+
+// Output:
+// Derived::GetState()
 ```
 
 The conclusion is:
 
-Accessiblity of a virtual function of a class is __decided by the type of the instance that you call it.__
+Accessiblity of a virtual function of a class is __decided by the type of the pointer/ref that you access the instance.__
 
-That means if the virtual function is public in the class, then the instance/pointer/ref with this class type would have public access to this virtual function. Same to `protect` and `private`
+This means even if the instance itself is `Derived` class, but you use a `Base` pointer to access it, the access control are following the one in `Base` class.
+
+However this doesn't change the polymorphical characristics. That is, the called function is still the one in `Derived` class.
