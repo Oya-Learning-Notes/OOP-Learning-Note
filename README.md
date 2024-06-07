@@ -15,4 +15,8 @@ An online C++ code compiler with extensive features support and really nice code
 
 Talks about different pointers in C++.
 
-[C++ Classes](./class)
+[C++ Classes](./class/readme.md)
+
+Notes about C++ Classes.
+
+[Cast Operator](./cast.md)

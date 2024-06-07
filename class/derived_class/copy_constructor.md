@@ -113,6 +113,8 @@ error: use of deleted function ‘Base::Base()’
 
 This means if you __do NOT explicitly call _Copy Constructor_, and `Base` don't have default constructor, then error occurred.__
 
+Also, even if __`Base` has no explicit _Copy Construcotr___, you __can use it in `Derived` since compiler will generate one for you__.
+
 # `const` Version
 
 Copy Constructor with non-const param in `Derived` could not call Copy Constructor in `Base` with `const` param. (Obviously)

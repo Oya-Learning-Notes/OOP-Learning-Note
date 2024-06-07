@@ -95,6 +95,8 @@ Notice that here `anoIns` is a `Derived` class type object, but `Base(const Base
 
 This is because the _derived class type convert_ rules that we talked about above. **Any publicly derived class type could convert to its public super class type.** Moreover, __as a special case, here the `public` condition is not needed anymore__. This means even if `Derived` is privitely derived from `Base`, this code will still work.
 
+Checkout [Derived Class Copy Constructor Notes](./derived_class/copy_constructor.md) for more info.
+
 # Destructor
 
 The situation in destructor is quite simple, since every class has **only one destructor, and it has no parameter**.
