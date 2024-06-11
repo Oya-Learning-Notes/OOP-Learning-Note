@@ -78,6 +78,17 @@ Base2 Constructor
 Derived Constructor
 ```
 
+## With Virtual Base Classes
+
+If there are virtual classes in the class hierarchy, the rules become:
+
+- Initialize `virtual` super class __(still first thing even if it's indirect super class)__.
+- Initialize __non-`virtual` super class__.
+- Initialize __class member__ by init list.
+- Execute constructor __function body__.
+
+Here is an [Code Example](./derived_class/code_eg_constructor_order.cpp)
+
 # Copy Constructor
 
 Similar to constructor, here we recommend calling super class copy constructor
